@@ -12,7 +12,11 @@ const routes: Routes = [
   {
     path: 'form/:id',
     component: VehicleComponent,
-  }
+  },
+  {
+    path: '',
+    loadChildren: () => import('./vehicle-list/vehicle-list.module').then(m => m.VehicleListModule),
+  },
 ];
 
 @NgModule({

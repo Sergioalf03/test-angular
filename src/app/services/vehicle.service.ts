@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Vehicle } from '../models/vehicule.model';
 
 @Injectable({
@@ -25,7 +26,20 @@ export class VehicleService {
     ),
   ];
 
+  private vehicleForm = new BehaviorSubject<Vehicle>(new Vehicle('', '', '', '', '', 0));
+
   constructor() { }
+
+  setVehicleForm(vehicle: Vehicle) {
+    this.vehicleForm.next(vehicle);
+  }
+
+  getVehicleForm() {
+    return this.vehicleForm.asObservable();
+      // .pipe(
+      //   map(vehicle => vehicle )
+      // );
+  }
 
   insert(vehicle: Vehicle) {
     this.vehicles.unshift(vehicle);

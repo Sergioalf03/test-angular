@@ -1,59 +1,51 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { Vehicle } from 'src/app/models/vehicule.model';
 import { VehicleService } from 'src/app/services/vehicle.service';
 
 @Component({
-  selector: 'app-vehicle',
-  templateUrl: './vehicle.component.html',
-  styleUrls: ['./vehicle.component.scss']
+  selector: 'app-vehicle-form',
+  templateUrl: './vehicle-form.component.html',
+  styleUrls: ['./vehicle-form.component.scss']
 })
-export class VehicleComponent implements OnInit {
+export class VehicleFormComponent implements OnInit {
 
   form!: FormGroup;
   creatingVehicle = true;
 
   vehicleId = '';
 
+  @Input() name!: string;
+  @Output() hideForm = new EventEmitter<boolean>(false);
+
+  vehicleSubscription!: Subscription;
+
   constructor(
     private vehicleService: VehicleService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
-    console.log(this.vehicleService.getAll());
     this.initForm();
-    this.activatedRoute
-      .paramMap
-      .subscribe(paramMap => {
-        if (paramMap.has('id')) {
-          this.creatingVehicle = false;
-          const id = paramMap.get('id');
-          if (id) {
-            this.vehicleId = id;
-          }
-          this.setVehicle();
-        }
+
+    this.vehicleSubscription = this.vehicleService
+      .getVehicleForm()
+      .subscribe(vehicle => {
+        this.creatingVehicle = false;
+        this.vehicleId = vehicle.id;
+        this.setVehicle(vehicle);
       });
   }
 
-  private setVehicle() {
-    const vehicle = this.vehicleService
-      .getOne(this.vehicleId);
-
-    if (vehicle) {
-      this.form.setValue({
-        id: vehicle.id,
-        brand: vehicle.brand,
-        model: vehicle.model,
-        color: vehicle.color,
-        year: vehicle.year,
-        type: vehicle.type,
-      })
-    }
-
+  private setVehicle(vehicle: Vehicle) {
+    this.form.setValue({
+      id: vehicle.id,
+      brand: vehicle.brand,
+      model: vehicle.model,
+      color: vehicle.color,
+      year: vehicle.year,
+      type: vehicle.type,
+    });
   }
 
   private initForm() {
@@ -130,7 +122,7 @@ export class VehicleComponent implements OnInit {
   }
 
   rederictToList() {
-    this.router.navigateByUrl('/vehicle');
+    this.hideForm.emit(true);
   }
 
   onDelete() {

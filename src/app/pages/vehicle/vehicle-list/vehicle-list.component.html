@@ -1,0 +1,36 @@
+<table>
+
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>MARCA</th>
+      <th>MODELO</th>
+      <th>COLOR</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr class="pointer" (click)="onOpenForm(vehicle.id)" *ngFor="let vehicle of shownVehicles; let i = index">
+      <th>{{ i + 1 }}</th>
+      <th>{{ vehicle.brand }}</th>
+      <th>{{ vehicle.model }}</th>
+      <th>{{ vehicle.color }}</th>
+    </tr>
+  </tbody>
+
+</table>
+
+<select #selector (change)="onFilterByType(+selector.value)">
+  <option value="0" selected>TODOS</option>
+  <option value="1">CUATRO RUEDAS</option>
+  <option value="2">DOS RUEDAS</option>
+</select>
+
+<button (click)="onOpenForm()">NUEVO</button>
+
+
+<app-vehicle-form
+  *ngIf="showForm"
+  [name]="'Sergio'"
+  (hideForm)="this.hideForm($event)"
+></app-vehicle-form>

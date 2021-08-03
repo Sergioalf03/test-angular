@@ -1,3 +1,6 @@
+
+<h1>{{ name }}</h1>
+
 <form [formGroup]="form" (submit)="submit()">
 
   <div class="form-group row">
@@ -80,6 +83,6 @@
 
   <button type="submit" class="btn btn-primary">ACEPTAR</button>
   <button (click)="rederictToList()" type="button" class="btn btn-primary">CANCELAR</button>
-  <button (click)="onDelete()" type="button" class="btn btn-primary">ELIMINAR</button>
+  <button *ngIf="this.vehicleId !== ''" (click)="onDelete()" type="button" class="btn btn-primary">ELIMINAR</button>
 
 </form>
